@@ -18,11 +18,18 @@ public class HypervisorClusterController {
         this.HypervisorClusterService = HypervisorClusterService;
     }
 
-    // http://localhost:8089/ooredoo/HypervisorCluster/HypervisorCluster-Hypervisors
-    @GetMapping("/HypervisorCluster-Hypervisors")
+    // http://localhost:8089/ooredoo/HypervisorCluster/HypervisorCluster-Hypervisors-VMs
+    @GetMapping("/HypervisorCluster-Hypervisors-VMs")
     @ResponseBody
     public Collection<HypervisorCluster> getAll() {
         return HypervisorClusterService.getAll();
+    }
+
+    // http://localhost:8089/ooredoo/HypervisorCluster/HypervisorCluster-Hypervisors
+    @GetMapping("/HypervisorCluster-Hypervisors")
+    @ResponseBody
+    public Collection<HypervisorCluster> getAllHypervisorClustersandHypervisors() {
+        return HypervisorClusterService.getAllHypervisorClustersandHypervisors();
     }
     // http://localhost:8089/ooredoo/HypervisorCluster/list-all
     @GetMapping("/list-all")
