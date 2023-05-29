@@ -3,28 +3,29 @@ package com.ooredoo.entities;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
 @NodeEntity
 public class VM {
 
     @Id
-    @GraphId
+    @GeneratedValue
     private Long id;
     private double CPU_Usage;
     private double CPU_Utilization;
     private String Guest_OS;
     private String IP;
-    private Long Memory_Size;
+    private long Memory_Size;
     private double Memory_Utilization;
-    private Long Provisioned_Space;
-    private Long Read_Throughput;
+    private long Provisioned_Space;
+    private long Read_Throughput;
     private String Resource_Pool;
     private String State;
     private String Status;
-    private Long Throughput;
-    private Long Used_Space;
-    private Long Virtual_Disk_Bandwidth;
-    private Long Write_Throughput;
+    private long Throughput;
+    private long Used_Space;
+    private long Virtual_Disk_Bandwidth;
+    private long Write_Throughput;
     private String name;
     private int vCPUs;
 

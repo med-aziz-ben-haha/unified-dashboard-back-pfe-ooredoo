@@ -3,11 +3,8 @@ package com.ooredoo.services;
 import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.HypervisorRepository;
-import com.ooredoo.repositories.VMRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,13 +12,18 @@ import java.util.List;
 @Service
 public class HypervisorService {
 
-    @Autowired
-    HypervisorRepository hypervisorRepository;
-    @Autowired
-    VMService vmService;
+    final HypervisorRepository hypervisorRepository;
+    final VMService vmService;
+
+    public HypervisorService(HypervisorRepository hypervisorRepository, VMService vmService) {
+        this.hypervisorRepository = hypervisorRepository;
+        this.vmService = vmService;
+    }
 
 
-        public Collection<Hypervisor> getAll() {
+    //------------------- display --------------------------
+    //display hypervisors and their vm list
+    public Collection<Hypervisor> getAll() {
             Collection<Hypervisor> hypervisors = hypervisorRepository.getAll();
 
             for (Hypervisor hypervisor : hypervisors) {
@@ -32,22 +34,26 @@ public class HypervisorService {
 
             return hypervisors;
               }
-
-
-public Collection<Hypervisor> getAllHypervisors() {
+    //display only hypervisors
+    public Collection<Hypervisor> getAllHypervisors() {
         return hypervisorRepository.getAllHypervisors();
     }
+    //display hypervisor list of a HypervisorCluster
+    public List<Hypervisor> getHypervisorsByHypervisorClusterName(String hypervisorClusterName) { return hypervisorRepository.findHypervisorsByHypervisorClusterName(hypervisorClusterName);}
 
-    public Hypervisor addHypervisor(Hypervisor hypervisor) {
-        return hypervisorRepository.save(hypervisor);
-    }
+    //-------------------- add ---------------------------------
+    //add single
+    public Hypervisor addSingleHypervisor(Hypervisor hypervisor) { return hypervisorRepository.save(hypervisor);}
+    //add multiple
+    public List<Hypervisor> addMultipleHypervisors(List<Hypervisor> hypervisors) {return hypervisorRepository.saveAll(hypervisors);}
 
+    //------------------- update --------------------------------
     public Hypervisor updateHypervisorByName(String name, Hypervisor updatedHypervisor) {
         Hypervisor existingHypervisor = hypervisorRepository.findByName(name);
 
 
         // Update the specific fields with the provided values
-        if (updatedHypervisor.getName() != null) {existingHypervisor.setName(updatedHypervisor.getName());}
+        if (updatedHypervisor.getName() != null) { existingHypervisor.setName(updatedHypervisor.getName());}
         if (updatedHypervisor.getCPU_Utilization() != 0.0) {existingHypervisor.setCPU_Utilization(updatedHypervisor.getCPU_Utilization());}
         if (updatedHypervisor.getDisk_Bandwidth() != 0.0) {existingHypervisor.setDisk_Bandwidth(updatedHypervisor.getDisk_Bandwidth());}
         if (updatedHypervisor.getMemory_Utilization() != 0.0) {existingHypervisor.setMemory_Utilization(updatedHypervisor.getMemory_Utilization());}
@@ -60,5 +66,11 @@ public Collection<Hypervisor> getAllHypervisors() {
         // Save the updated Hypervisor node
         return hypervisorRepository.save(existingHypervisor);
     }
+
+    //---------------------- delete -------------------------------
+    //delete single
+    public void deleteSingleHypervisorByName(String name) { hypervisorRepository.deleteByName(name);}
+    //delete multiple
+    public void deleteMultipleHypervisorsByName(List<String> names) { hypervisorRepository.deleteAllByNameIn(names);}
 
 }
