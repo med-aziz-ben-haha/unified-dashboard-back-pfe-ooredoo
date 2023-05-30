@@ -4,7 +4,6 @@ import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.HypervisorCluster;
 import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.HypervisorClusterRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
