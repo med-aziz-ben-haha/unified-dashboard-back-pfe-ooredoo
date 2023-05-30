@@ -18,19 +18,24 @@ public class DatacenterController {
         this.DatacenterService = DatacenterService;
     }
 
-    // http://localhost:8089/ooredoo/Datacenter/Datacenter-Hypervisors-VMs
-   /* @GetMapping("/Datacenter-Hypervisors-VMs")
+    // http://localhost:8089/ooredoo/Datacenter/Datacenter-Datastores-HypervisorClusters-Hypervisors-VMs
+    @GetMapping("/Datacenter-Datastores-HypervisorClusters-Hypervisors-VMs")
     @ResponseBody
     public Collection<Datacenter> getAll() {
         return DatacenterService.getAll();
-    }*/
-
-    // http://localhost:8089/ooredoo/Datacenter/Datacenter-Hypervisors
-   /* @GetMapping("/Datacenter-Hypervisors")
+    }
+    // http://localhost:8089/ooredoo/Datacenter/Datacenter-HypervisorClusters
+   @GetMapping("/Datacenter-HypervisorClusters")
     @ResponseBody
-    public Collection<Datacenter> getAllDatacentersandHypervisors() {
-        return DatacenterService.getAllDatacentersandHypervisors();
-    }*/
+    public Collection<Datacenter> getAllDatacentersandHypervisorClusters() {
+        return DatacenterService.getAllDatacentersandHypervisorClusters();
+    }
+    // http://localhost:8089/ooredoo/Datacenter/Datacenter-Datastores
+    @GetMapping("/Datacenter-Datastores")
+    @ResponseBody
+    public Collection<Datacenter> getAllDatacentersandDatastores() {
+        return DatacenterService.getAllDatacentersandDatastores();
+    }
     // http://localhost:8089/ooredoo/Datacenter/list-all
     @GetMapping("/list-all")
     @ResponseBody

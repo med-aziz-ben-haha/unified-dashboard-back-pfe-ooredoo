@@ -23,6 +23,9 @@ public interface DatastoreRepository extends Neo4jRepository<Datastore, Long> {
     //get Datastore based on vm
     @Query("MATCH (vm:VM {name: $name})<-[:Associated]-(Datastore:Datastore) RETURN Datastore")
     List<Datastore> findDatastoresByVMName(@Param("name") String VMName);
+    //get Datastore based on Datacenter
+    @Query("MATCH (dc:Datacenter {name: $name})-[:contains]->(Datastore:Datastore) RETURN Datastore")
+    List<Datastore> findDatastoresByDatacenterName(@Param("name") String DatacenterName);
 
     //add Datastore
     Datastore save(Datastore Datastore);

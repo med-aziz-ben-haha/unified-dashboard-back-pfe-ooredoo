@@ -1,8 +1,6 @@
 package com.ooredoo.services;
 
-import com.ooredoo.entities.Hypervisor;
-import com.ooredoo.entities.Datacenter;
-import com.ooredoo.entities.VM;
+import com.ooredoo.entities.*;
 import com.ooredoo.repositories.DatacenterRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,50 +12,81 @@ import java.util.List;
 public class DatacenterService {
 
     final DatacenterRepository DatacenterRepository;
+    final HypervisorClusterService HypervisorClusterService;
     final HypervisorService HypervisorService;
-    final VMService vmService;
+    final DatastoreService DatastoreService;
+    final VMService VMService;
 
-    public DatacenterService(DatacenterRepository DatacenterRepository, VMService vmService, HypervisorService HypervisorService) {
+    public DatacenterService(DatacenterRepository DatacenterRepository, HypervisorService HypervisorService, DatastoreService DatastoreService, HypervisorClusterService HypervisorClusterService, VMService VMService) {
         this.DatacenterRepository = DatacenterRepository;
-        this.vmService = vmService;
+        this.DatastoreService = DatastoreService;
+        this.HypervisorClusterService = HypervisorClusterService;
         this.HypervisorService = HypervisorService;
+        this.VMService = VMService;
+
     }
 
 
     //------------------- display --------------------------
     //display Datacenters and their Hypervisors list and vms
-   /* public Collection<Datacenter> getAll() {
-        Collection<Datacenter> Datacenters = DatacenterRepository.getAll();
+  public Collection<Datacenter> getAll() {
+        Collection<Datacenter> Datacenters = DatacenterRepository.getAllDatacenters();
 
         for (Datacenter Datacenter : Datacenters) {
             String DatacenterName = Datacenter.getName();
-            List<Hypervisor> Hypervisors = HypervisorService.getHypervisorsByDatacenterName(DatacenterName);
-            for (Hypervisor hypervisor : Hypervisors) {
-                String hypervisorName = hypervisor.getName();
-                List<VM> vms = vmService.getVMsByHypervisorName(hypervisorName);
-                hypervisor.setVMS(vms);
-            }
-            Datacenter.setHypervisors(Hypervisors);
+
+            //get datastores list
+            List<Datastore> Datastores = DatastoreService.getDatastoresByDatacenterName(DatacenterName);
+            Datacenter.setDatastoresList(Datastores);
+
+
+            //get hypervisor clusters list
+            List<HypervisorCluster> HypervisorClusters = HypervisorClusterService.getHypervisorClustersByDatacenterName(DatacenterName);
+                for (HypervisorCluster HypervisorCluster : HypervisorClusters) {
+                    String HypervisorClusterName = HypervisorCluster.getName();
+                    //get vm list of hypervisor
+                    List<Hypervisor> Hypervisors = HypervisorService.getHypervisorsByHypervisorClusterName(HypervisorClusterName);
+                    for (Hypervisor Hypervisor : Hypervisors) {
+                        String hypervisorName = Hypervisor.getName();
+                        List<VM> vms = VMService.getVMsByHypervisorName(hypervisorName);
+                        Hypervisor.setVMS(vms);
+                    }
+                    HypervisorCluster.setHypervisors(Hypervisors);
+                    //get vm list of hypervisor
+                }
+            Datacenter.setHypervisorClustersList(HypervisorClusters);
+
         }
 
         return Datacenters;
     }
-    //display Datacenters and their Hypervisors list
-  public Collection<Datacenter> getAllDatacentersandHypervisors() {
-            Collection<Datacenter> Datacenters = DatacenterRepository.getAll();
+
+    //display Datacenters and their HypervisorClusters list
+    public Collection<Datacenter> getAllDatacentersandDatastores() {
+        Collection<Datacenter> Datacenters = DatacenterRepository.getAllDatacenters();
+
+        for (Datacenter Datacenter : Datacenters) {
+            String DatacenterName = Datacenter.getName();
+            List<Datastore> Datastores = DatastoreService.getDatastoresByDatacenterName(DatacenterName);
+            Datacenter.setDatastoresList(Datastores);
+        }
+
+        return Datacenters;
+    }
+    //display Datacenters and their HypervisorClusters list
+    public Collection<Datacenter> getAllDatacentersandHypervisorClusters() {
+            Collection<Datacenter> Datacenters = DatacenterRepository.getAllDatacenters();
 
             for (Datacenter Datacenter : Datacenters) {
                 String DatacenterName = Datacenter.getName();
-                List<Hypervisor> Hypervisors = HypervisorService.getHypervisorsByDatacenterName(DatacenterName);
-                Datacenter.setHypervisors(Hypervisors);
+                List<HypervisorCluster> HypervisorClusters = HypervisorClusterService.getHypervisorClustersByDatacenterName(DatacenterName);
+                Datacenter.setHypervisorClustersList(HypervisorClusters);
             }
 
             return Datacenters;
-              }*/
+              }
     //display only Datacenters
-    public Collection<Datacenter> getAllDatacenters() {
-        return DatacenterRepository.getAllDatacenters();
-    }
+    public Collection<Datacenter> getAllDatacenters() {return DatacenterRepository.getAllDatacenters();}
 
     //-------------------- add ---------------------------------
     //add single

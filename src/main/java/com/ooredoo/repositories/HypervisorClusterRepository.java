@@ -1,8 +1,10 @@
 package com.ooredoo.repositories;
 
+import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.HypervisorCluster;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +17,9 @@ public interface HypervisorClusterRepository extends Neo4jRepository<HypervisorC
     //get HypervisorClusters only
     @Query("MATCH (n:HypervisorCluster) RETURN n")
     Collection<HypervisorCluster> getAllHypervisorClusters();
+    //get HypervisorClusters based on Datacenter
+    @Query("MATCH (h:Datacenter {name: $name})-[:contains]->(HypervisorCluster:HypervisorCluster) RETURN HypervisorCluster")
+    List<HypervisorCluster> findHypervisorClustersByDatacenterName(@Param("name") String hypervisorClusterName);
 
     //add HypervisorCluster
     HypervisorCluster save(HypervisorCluster HypervisorCluster);

@@ -16,9 +16,10 @@ public interface HypervisorRepository extends Neo4jRepository<Hypervisor, Long> 
     //get hypervisors only
     @Query("MATCH (n:Hypervisor) RETURN n")
     Collection<Hypervisor> getAllHypervisors();
-    //get vm based on hypervisor
+    //get Hypervisors based on hypervisorCluster
     @Query("MATCH (h:HypervisorCluster {name: $name})-[:contains]->(Hypervisor:Hypervisor) RETURN Hypervisor")
     List<Hypervisor> findHypervisorsByHypervisorClusterName(@Param("name") String hypervisorClusterName);
+
 
     //add hypervisor
     Hypervisor save(Hypervisor hypervisor);
