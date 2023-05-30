@@ -24,6 +24,10 @@ public class VMService {
     public List<VM> getVMsByHypervisorName(String hypervisorName) {
         return VMRepository.findVMsByHypervisorName(hypervisorName);
     }
+    //display vm list of a Datastore
+    public List<VM> getVMsByDatastoreName(String DatastoreName) {
+        return VMRepository.findVMsByDatastoreName(DatastoreName);
+    }
 
     //-------------------- add ---------------------------------
     //add single

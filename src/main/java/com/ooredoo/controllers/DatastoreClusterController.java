@@ -19,12 +19,12 @@ public class DatastoreClusterController {
     }
 
     // http://localhost:8089/ooredoo/DatastoreCluster/DatastoreCluster-Datastores-VMs
-  /*  @GetMapping("/DatastoreCluster-Datastores-VMs")
+   @GetMapping("/DatastoreCluster-Datastores-VMs")
     @ResponseBody
     public Collection<DatastoreCluster> getAll() {
         return DatastoreClusterService.getAll();
     }
-*/
+
     // http://localhost:8089/ooredoo/DatastoreCluster/DatastoreCluster-Datastores
     @GetMapping("/DatastoreCluster-Datastores")
     @ResponseBody

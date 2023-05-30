@@ -11,8 +11,8 @@ import java.util.List;
 public interface DatastoreRepository extends Neo4jRepository<Datastore, Long> {
 
     //get Datastores and their vms
-    /*@Query("MATCH (n:Datastore) RETURN n")
-    Collection<Datastore> getAll();*/
+    @Query("MATCH (n:Datastore) RETURN n")
+    Collection<Datastore> getAll();
     //get Datastores only
     @Query("MATCH (n:Datastore) RETURN n")
     Collection<Datastore> getAllDatastores();

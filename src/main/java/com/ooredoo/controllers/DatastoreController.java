@@ -18,12 +18,12 @@ public class DatastoreController {
         this.DatastoreService = DatastoreService;
     }
 
-   /* // http://localhost:8089/ooredoo/Datastore/Datastore-VM
+    // http://localhost:8089/ooredoo/Datastore/Datastore-VM
     @GetMapping("/Datastore-VM")
     @ResponseBody
     public Collection<Datastore> getAll() {
         return DatastoreService.getAll();
-    }*/
+    }
     // http://localhost:8089/ooredoo/Datastore/list-all
     @GetMapping("/list-all")
     @ResponseBody

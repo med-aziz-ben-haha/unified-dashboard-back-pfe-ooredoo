@@ -22,11 +22,16 @@ public class VMController {
     @ResponseBody
     public Collection<VM> getAllVMs() { return VMService.getAllVMs(); }
     // http://localhost:8089/ooredoo/VM/{hypervisorName}/vms
-    @GetMapping("/{hypervisorName}/vms")
+    @GetMapping("/Hypervisor/{hypervisorName}/vms")
     public List<VM> getVMsByHypervisorName(@PathVariable String hypervisorName) {
         return VMService.getVMsByHypervisorName(hypervisorName);
     }
 
+    // http://localhost:8089/ooredoo/VM/{DatastoreName}/vms
+    @GetMapping("/Datastore/{DatastoreName}/vms")
+    public List<VM> getVMsByDatastoreName(@PathVariable String DatastoreName) {
+        return VMService.getVMsByDatastoreName(DatastoreName);
+    }
 
 
     // http://localhost:8089/ooredoo/VM/add-one

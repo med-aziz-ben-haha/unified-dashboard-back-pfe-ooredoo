@@ -26,6 +26,11 @@ public class Datastore {
     private String Type;
     private double UsedSpace;
 
+    @Relationship(type = "Associated", direction = Relationship.OUTGOING)
+    private List<VM> VMS;
+
+
+
     //Getters and stters
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
@@ -61,6 +66,8 @@ public class Datastore {
     public double getUsedSpace() {return UsedSpace;}
     public void setUsedSpace(double usedSpace) {UsedSpace = usedSpace;}
 
+    public List<VM> getVMS() {return VMS;}
+    public void setVMS(List<VM> VMS) {this.VMS = VMS;}
 
     //Constructor
     public Datastore() {    }

@@ -1,6 +1,7 @@
 package com.ooredoo.services;
 
 import com.ooredoo.entities.Datastore;
+import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.DatastoreRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class DatastoreService {
 
     //------------------- display --------------------------
     //display Datastores and their vm list
-   /* public Collection<Datastore> getAll() {
+    public Collection<Datastore> getAll() {
             Collection<Datastore> Datastores = DatastoreRepository.getAll();
 
             for (Datastore Datastore : Datastores) {
@@ -32,7 +33,7 @@ public class DatastoreService {
             }
 
             return Datastores;
-              }*/
+              }
     //display only Datastores
     public Collection<Datastore> getAllDatastores() {
         return DatastoreRepository.getAllDatastores();
