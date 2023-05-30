@@ -1,6 +1,7 @@
 package com.ooredoo.repositories;
 
 import com.ooredoo.entities.Datastore;
+import com.ooredoo.entities.VM;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,9 +17,12 @@ public interface DatastoreRepository extends Neo4jRepository<Datastore, Long> {
     //get Datastores only
     @Query("MATCH (n:Datastore) RETURN n")
     Collection<Datastore> getAllDatastores();
-    //get vm based on Datastore
+    //get datastore based on DatastoreCluster
     @Query("MATCH (h:DatastoreCluster {name: $name})-[:contains]->(Datastore:Datastore) RETURN Datastore")
     List<Datastore> findDatastoresByDatastoreClusterName(@Param("name") String DatastoreClusterName);
+    //get Datastore based on vm
+    @Query("MATCH (vm:VM {name: $name})<-[:Associated]-(Datastore:Datastore) RETURN Datastore")
+    List<Datastore> findDatastoresByVMName(@Param("name") String VMName);
 
     //add Datastore
     Datastore save(Datastore Datastore);

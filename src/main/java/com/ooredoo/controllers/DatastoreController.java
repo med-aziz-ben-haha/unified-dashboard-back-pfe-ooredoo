@@ -1,6 +1,7 @@
 package com.ooredoo.controllers;
 
 import com.ooredoo.entities.Datastore;
+import com.ooredoo.entities.VM;
 import com.ooredoo.services.DatastoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,11 @@ public class DatastoreController {
     @GetMapping("/list-all")
     @ResponseBody
     public Collection<Datastore> getAllDatastores() { return DatastoreService.getAllDatastores(); }
-
+    // http://localhost:8089/ooredoo/Datastore/VM/{VMName}/Datastores
+    @GetMapping("/VM/{VMName}/Datastores")
+    public List<Datastore> getDatastoresByVMName(@PathVariable String VMName) {
+        return DatastoreService.getDatastoresByVMName(VMName);
+    }
 
 
     // http://localhost:8089/ooredoo/Datastore/add-one

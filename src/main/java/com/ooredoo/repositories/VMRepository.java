@@ -14,7 +14,7 @@ public interface VMRepository extends Neo4jRepository<VM, Long> {
     //get vm based on hypervisor
     @Query("MATCH (h:Hypervisor {name: $name})-[:run]->(vm:VM) RETURN vm")
     List<VM> findVMsByHypervisorName(@Param("name") String hypervisorName);
-    //get vm based on hypervisor
+    //get vm based on Datastore
     @Query("MATCH (h:Datastore {name: $name})-[:Associated]->(vm:VM) RETURN vm")
     List<VM> findVMsByDatastoreName(@Param("name") String DatastoreName);
     //get all vm

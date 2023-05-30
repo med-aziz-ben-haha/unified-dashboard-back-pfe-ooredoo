@@ -41,6 +41,8 @@ public class DatastoreService {
     //display Datastore list of a DatastoreCluster
     public List<Datastore> getDatastoresByDatastoreClusterName(String DatastoreClusterName) { return DatastoreRepository.findDatastoresByDatastoreClusterName(DatastoreClusterName);}
 
+    //display datastore list of a vm
+    public List<Datastore> getDatastoresByVMName(String VMName) {return DatastoreRepository.findDatastoresByVMName(VMName);}
     //-------------------- add ---------------------------------
     //add single
     public Datastore addSingleDatastore(Datastore Datastore) { return DatastoreRepository.save(Datastore);}

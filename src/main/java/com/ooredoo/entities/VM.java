@@ -2,8 +2,11 @@ package com.ooredoo.entities;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
+
+import java.util.List;
 
 @NodeEntity
 public class VM {
@@ -29,9 +32,10 @@ public class VM {
     private String name;
     private int vCPUs;
 
+    @Relationship(type = "Associated", direction = Relationship.INCOMING)
+    private List<Datastore> Datastores;
+
     //Getters and Setters
-
-
     public double getCPU_Usage() {return CPU_Usage;}
     public void setCPU_Usage(double CPU_Usage) {this.CPU_Usage = CPU_Usage;}
 
@@ -82,6 +86,9 @@ public class VM {
 
     public int getvCPUs() {return vCPUs;}
     public void setvCPUs(int vCPUs) {this.vCPUs = vCPUs;}
+
+    public List<Datastore> getDatastores() {return Datastores;}
+    public void setDatastores(List<Datastore> datastores) {Datastores = datastores;}
 
     //constructor
     public VM() { }
