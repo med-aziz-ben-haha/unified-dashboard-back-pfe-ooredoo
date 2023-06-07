@@ -4,6 +4,8 @@ import com.ooredoo.entities.*;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.*;
 import org.springframework.data.repository.query.Param;
+import org.neo4j.driver.types.Relationship;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -31,5 +33,15 @@ public interface HypervisorRepository extends Neo4jRepository<Hypervisor, Long> 
     void deleteByName(String name);
     void deleteAllByNameIn(List<String> names);
 
+    //create hypervisor VM relationship
+    @Query("MATCH (hypervisor:Hypervisor {name: $hypervisorName}), (vm:VM {name: $vmName}) CREATE (hypervisor)-[r:run]->(vm)")
+    Relationship createRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName);
+
+    //delete hypervisor VM relationship
+    @Query("MATCH (hypervisor:Hypervisor {name: $hypervisorName})-[r:run]->(vm:VM {name: $vmName}) DELETE r")
+    void deleteRelationshipBetweenHypervisorAndVM(@Param("hypervisorName") String hypervisorName, @Param("vmName") String vmName);
 
 }
+
+
+

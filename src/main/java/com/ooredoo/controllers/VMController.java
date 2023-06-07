@@ -1,9 +1,7 @@
 package com.ooredoo.controllers;
 
-import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.VM;
 import com.ooredoo.services.VMService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +12,11 @@ import java.util.List;
 @RequestMapping("/VM")
 public class VMController {
 
-    @Autowired
-    VMService VMService;
+    final VMService VMService;
+
+    public VMController(VMService VMService) {
+        this.VMService = VMService;
+    }
 
     // http://localhost:8089/ooredoo/VM/list-all
     @GetMapping("/list-all")
@@ -69,5 +70,7 @@ public class VMController {
         VMService.deleteMultipleVMsByName(names);
         return ResponseEntity.ok("VMs deleted successfully");
     }
+
+
 
 }

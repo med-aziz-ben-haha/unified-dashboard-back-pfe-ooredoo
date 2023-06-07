@@ -93,4 +93,29 @@ public class VM {
     //constructor
     public VM() { }
 
+    // parametered constructor
+    public VM(String name, int vCPUs, String state, double CPU_Usage, String guest_OS, String IP, String resource_Pool, List<Datastore> datastores, long throughput, long used_Space, long memory_Size, String status, long virtual_Disk_Bandwidth, double CPU_Utilization, long read_Throughput, long write_Throughput, double memory_Utilization, long provisioned_Space) {
+        this.CPU_Usage = CPU_Usage;
+        this.CPU_Utilization = CPU_Utilization;
+        Guest_OS = guest_OS;
+        this.IP = IP;
+        Memory_Size = memory_Size;
+        Memory_Utilization = memory_Utilization;
+        Provisioned_Space = provisioned_Space;
+        Read_Throughput = read_Throughput;
+        Resource_Pool = resource_Pool;
+        State = state;
+        Status = status;
+        Throughput = throughput;
+        Used_Space = used_Space;
+        Virtual_Disk_Bandwidth = virtual_Disk_Bandwidth;
+        Write_Throughput = write_Throughput;
+        this.name = name;
+        this.vCPUs = vCPUs;
+        Datastores = datastores;
+    }
+
+
+
+
 }
