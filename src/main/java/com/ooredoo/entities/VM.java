@@ -1,6 +1,5 @@
 package com.ooredoo.entities;
 
-import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
@@ -93,7 +92,7 @@ public class VM {
     //constructor
     public VM() { }
 
-    // parametered constructor
+    // parameterized constructor
     public VM(String name, int vCPUs, String state, double CPU_Usage, String guest_OS, String IP, String resource_Pool, List<Datastore> datastores, long throughput, long used_Space, long memory_Size, String status, long virtual_Disk_Bandwidth, double CPU_Utilization, long read_Throughput, long write_Throughput, double memory_Utilization, long provisioned_Space) {
         this.CPU_Usage = CPU_Usage;
         this.CPU_Utilization = CPU_Utilization;

@@ -78,4 +78,12 @@ public class GeneralController {
         return ResponseEntity.ok("VM Database updated successfully");
     }
 
+    // http://localhost:8089/ooredoo/General/update-Hypervisor-database
+    @PostMapping("/update-Hypervisor-database")
+    public ResponseEntity<String> updateHypervisorDatabase() {
+        GeneralService.addHypervisorToList();
+        GeneralService.updateHypervisorDatabase(GeneralService.HypervisorsList);
+        return ResponseEntity.ok("Hypervisor Database updated successfully");
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.ooredoo.services;
 
+import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.HypervisorRepository;
 import org.neo4j.driver.types.Relationship;
@@ -14,12 +15,16 @@ public class GeneralService {
 
     private final HypervisorRepository HypervisorRepository;
     private final VMService VMService;
+    private final HypervisorService HypervisorService;
 
-    public GeneralService(HypervisorRepository HypervisorRepository, VMService VMService) {
+    public GeneralService(HypervisorRepository HypervisorRepository, VMService VMService, HypervisorService HypervisorService) {
         this.HypervisorRepository = HypervisorRepository;
         this.VMService  = VMService;
+        this.HypervisorService = HypervisorService;
     }
 
+
+    //-------------------- Update Hypervisor VM  relationship database ------------------
     public Relationship createRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
         return HypervisorRepository.createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
     }
@@ -27,19 +32,11 @@ public class GeneralService {
         HypervisorRepository.deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
     }
     public Map<String, Object> HypervisorVMList = new HashMap<>();
+
     public void linkHypervisorVMs(){
-        HypervisorVMList.put("Hypervisor", "HypervisorTest");
+        HypervisorVMList.put("Hypervisor", "HypervisorTest1");
         HypervisorVMList.put("VMs", Arrays.asList("TestVM1", /*"TestVM2",*/ "TestVM"));
     }
-/*
-    public void createRelationshipBetweenOneHypervisorAndVMs(Map<String, Object> HypervisorVMList) {
-        String hypervisorName = (String) HypervisorVMList.get("Hypervisor");
-        List<String> vmNames = (List<String>) HypervisorVMList.get("VMs");
-        for (String vmName : vmNames) {
-            createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
-        }
-    }
-*/
 
     public void updateRelationshipBetweenOneHypervisorAndVMs(Map<String, Object> hypervisorVMList) {
         String hypervisorName = (String) hypervisorVMList.get("Hypervisor");
@@ -55,9 +52,39 @@ public class GeneralService {
 
     }
 
+    //-------------------- Update Hypervisor database ------------------
+    public void updateHypervisorDatabase(List<Hypervisor> Hypervisors) {
+        Collection<Hypervisor> existingHypervisors = HypervisorService.getAllHypervisors(); // Retrieve all existing Hypervisors from the database
+        List<String> existingHypervisorNames = existingHypervisors.stream().map(Hypervisor::getName).collect(Collectors.toList());
 
+        // Add or update VMs
+        for (Hypervisor Hypervisor : Hypervisors) {
+            if (existingHypervisorNames.contains(Hypervisor.getName()))  HypervisorService.updateHypervisorByName(Hypervisor.getName(), Hypervisor);  // Hypervisor already exists, update it
+            else HypervisorService.addMultipleHypervisors(Collections.singletonList(Hypervisor)); // Hypervisor is new, add it
+        }
+        // Delete Hypervisors not present in the input list
+        List<String> inputHypervisorNames = Hypervisors.stream().map(Hypervisor::getName).collect(Collectors.toList());
+        List<String> HypervisorNamesToDelete = existingHypervisorNames.stream().filter(name -> !inputHypervisorNames.contains(name)).collect(Collectors.toList());
 
-    //-------------------- Update vm database from api ------------------
+        HypervisorService.deleteMultipleHypervisorsByName(HypervisorNamesToDelete);
+    }
+
+    public List<Hypervisor> HypervisorsList = new ArrayList<>();
+    public void addHypervisorToList() {
+        HypervisorsList.add(new Hypervisor("cha-esxi-itaas04.intra.local", 48.78, 140.97, 76.77, "CH121 V3", "Normal", 88, 1048173, "VMware ESXi 7.0.3 build-20328353"));
+        HypervisorsList.add(new Hypervisor("mgh-esxi-itaas03.intra.local", 45.14, 254.57, 88.26, "ProLiant BL460c Gen9", "Normal", 64, 524158, "VMware ESXi 7.0.3 build-20036589"));
+        HypervisorsList.add(new Hypervisor("mgh-esxi-edge04.intra.local", 1.18, 0.06, 3.29, "ProLiant BL460c Gen9", "Normal", 64, 524158, "VMware ESXi 7.0.3 build-20036589"));
+        HypervisorsList.add(new Hypervisor("mgh-esxi-edge01.intra.local", 1.36, 0.29, 2.0, "ProLiant BL460c Gen9", "Normal", 64, 524158, "VMware ESXi 7.0.3 build-20036589"));
+        HypervisorsList.add(new Hypervisor("esxi01-edge.unifydev.local", 0.52, 0.12, 2.15, "CH121 V3", "Normal", 74, 261749, "VMware ESXi 6.5.0 build-4887370"));
+        HypervisorsList.add(new Hypervisor("cha-esxi-edge03.intra.local", 1.66, 0.14, 1.88, "CH121 V3", "Normal", 88, 1048173, "VMware ESXi 7.0.3 build-20328353"));
+        HypervisorsList.add(new Hypervisor("esxi01-itaas.unifydev.local", 25.03, 8.61, 89.21, "CH121 V3", "Warning", 74, 261749, "VMware ESXi 6.5.0 build-4887370"));
+        HypervisorsList.add(new Hypervisor("esxi04-itaas.unifydev.local", 68.78, 0.98, 95.38, "CH121 V3", "Alert", 74, 261749, "VMware ESXi 6.5.0 build-4887370"));
+        HypervisorsList.add(new Hypervisor("HypervisorTest", 48.78, 140.0, 76.77, "V3", "Normal", 8, 14, "VMware ESXi 7.0.3 build-20328353"));
+        HypervisorsList.add(new Hypervisor("HypervisorTest1", 8.78, 40.0, 6.77, "V2", "Normal", 8, 14, "VMware ESXi 7.0.3 build-20328353"));
+
+    }
+
+    //-------------------- Update VM database ------------------
     public void updateVMDatabase(List<VM> VMs) {
         Collection<VM> existingVMs = VMService.getAllVMs(); // Retrieve all existing VMs from the database
         List<String> existingVMNames = existingVMs.stream().map(VM::getName).collect(Collectors.toList());
@@ -92,5 +119,6 @@ public class GeneralService {
         VMsList.add(new VM("VMSoftSecCent", 6, "Powered Off", 0.2, "Red Hat Enterprise Linux 6 (64-bit)", "192.168.1.155", "Resources", new ArrayList<>(), 80, 320, 512, "Unknown", 200, 0.9, 41, 32, 0.4, 1235));
         VMsList.add(new VM("rm2dev.orascomtunisie.com", 22, "Powered On", 0.6, "Linux 4.18.0-80.el8.x86_64 Red Hat Enterprise Linux release 8.0 (Ootpa)", "10.184.1.10", "MGH-OrgvDC (335a414f-75d3-4f1e-b36a-7a88ac1f202d)", new ArrayList<>(), 80, 6350, 34096, "Normal", 2020, 0.7, 560, 340, 0.4, 10042));
     }
+
 
 }

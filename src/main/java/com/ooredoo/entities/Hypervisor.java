@@ -68,4 +68,16 @@ public class Hypervisor {
     //Constructor
     public Hypervisor() {    }
 
+    //parameterized constructor
+    public Hypervisor(String name, double CPU_Utilization, double disk_Bandwidth, double memory_Utilization, String model, String status, int total_CPU, int total_Memory, String version) {
+        this.name = name;
+        this.CPU_Utilization = CPU_Utilization;
+        Disk_Bandwidth = disk_Bandwidth;
+        Memory_Utilization = memory_Utilization;
+        Model = model;
+        Status = status;
+        Total_CPU = total_CPU;
+        Total_Memory = total_Memory;
+        Version = version;
+    }
 }
