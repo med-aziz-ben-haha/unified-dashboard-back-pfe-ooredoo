@@ -72,4 +72,19 @@ public class Datastore {
     //Constructor
     public Datastore() {    }
 
+    // parameterized constructor
+
+
+    public Datastore(String name, String type,double freeSpace,double provisioned, double throughput, double usedSpace, double latency,double bandwidth,  int hypervisors, double capacity  ) {
+        this.name = name;
+        Bandwidth = bandwidth;
+        Capacity = capacity;
+        FreeSpace = freeSpace;
+        Hypervisors = hypervisors;
+        Latency = latency;
+        Provisioned = provisioned;
+        Throughput = throughput;
+        Type = type;
+        UsedSpace = usedSpace;
+    }
 }

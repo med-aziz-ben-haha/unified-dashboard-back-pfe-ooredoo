@@ -42,4 +42,11 @@ public class DatastoreCluster {
     //Constructor
     public DatastoreCluster() {    }
 
+    // parameterized constructor
+
+    public DatastoreCluster(String name, double freeSpace, double totalCapacity) {
+        this.name = name;
+        this.freeSpace = freeSpace;
+        this.totalCapacity = totalCapacity;
+    }
 }

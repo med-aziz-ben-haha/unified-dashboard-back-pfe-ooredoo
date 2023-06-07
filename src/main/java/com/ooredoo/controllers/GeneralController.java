@@ -86,4 +86,12 @@ public class GeneralController {
         return ResponseEntity.ok("Hypervisor Database updated successfully");
     }
 
+    // http://localhost:8089/ooredoo/General/update-Datastore-database
+    @PostMapping("/update-Datastore-database")
+    public ResponseEntity<String> updateDatastoreDatabase() {
+        GeneralService.addDatastoreToList();
+        GeneralService.updateDatastoreDatabase(GeneralService.DatastoresList);
+        return ResponseEntity.ok("Datastore Database updated successfully");
+    }
+
 }

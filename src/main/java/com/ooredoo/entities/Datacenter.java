@@ -56,4 +56,14 @@ public class Datacenter {
     //Constructor
     public Datacenter() {    }
 
+    // parameterized constructor
+
+
+    public Datacenter(String name, int datastoreClusters, int datastores, int hypervisors, int virtualMachines) {
+        this.name = name;
+        DatastoreClusters = datastoreClusters;
+        Datastores = datastores;
+        Hypervisors = hypervisors;
+        VirtualMachines = virtualMachines;
+    }
 }

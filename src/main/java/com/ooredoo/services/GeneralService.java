@@ -1,5 +1,6 @@
 package com.ooredoo.services;
 
+import com.ooredoo.entities.Datastore;
 import com.ooredoo.entities.Hypervisor;
 import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.HypervisorRepository;
@@ -16,13 +17,16 @@ public class GeneralService {
     private final HypervisorRepository HypervisorRepository;
     private final VMService VMService;
     private final HypervisorService HypervisorService;
+    private final DatastoreService DatastoreService;
 
-    public GeneralService(HypervisorRepository HypervisorRepository, VMService VMService, HypervisorService HypervisorService) {
+    public GeneralService(HypervisorRepository HypervisorRepository, VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
         this.HypervisorRepository = HypervisorRepository;
         this.VMService  = VMService;
         this.HypervisorService = HypervisorService;
+        this.DatastoreService = DatastoreService;
     }
 
+// ############################## Relationships Update ########################################################
 
     //-------------------- Update Hypervisor VM  relationship database ------------------
     public Relationship createRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
@@ -31,13 +35,12 @@ public class GeneralService {
     public void deleteRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
         HypervisorRepository.deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
     }
-    public Map<String, Object> HypervisorVMList = new HashMap<>();
 
+    public Map<String, Object> HypervisorVMList = new HashMap<>();
     public void linkHypervisorVMs(){
         HypervisorVMList.put("Hypervisor", "HypervisorTest1");
         HypervisorVMList.put("VMs", Arrays.asList("TestVM1", /*"TestVM2",*/ "TestVM"));
     }
-
     public void updateRelationshipBetweenOneHypervisorAndVMs(Map<String, Object> hypervisorVMList) {
         String hypervisorName = (String) hypervisorVMList.get("Hypervisor");
         List<String> vmList = (List<String>) hypervisorVMList.get("VMs");
@@ -49,6 +52,41 @@ public class GeneralService {
 
         for (VM vm : currentVMs) // Delete relationships for VMs not in the list
             if (!vmList.contains(vm.getName())) deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vm.getName());
+
+    }
+
+
+// ############################## Components Update ########################################################
+
+    //-------------------- Update Datastore database ------------------
+    public void updateDatastoreDatabase(List<Datastore> Datastores) {
+        Collection<Datastore> existingDatastores = DatastoreService.getAllDatastores(); // Retrieve all existing Datastores from the database
+        List<String> existingDatastoreNames = existingDatastores.stream().map(Datastore::getName).collect(Collectors.toList());
+
+        // Add or update VMs
+        for (Datastore Datastore : Datastores) {
+            if (existingDatastoreNames.contains(Datastore.getName()))  DatastoreService.updateDatastoreByName(Datastore.getName(), Datastore);  // Datastore already exists, update it
+            else DatastoreService.addMultipleDatastores(Collections.singletonList(Datastore)); // Datastore is new, add it
+        }
+        // Delete Datastores not present in the input list
+        List<String> inputDatastoreNames = Datastores.stream().map(Datastore::getName).collect(Collectors.toList());
+        List<String> DatastoreNamesToDelete = existingDatastoreNames.stream().filter(name -> !inputDatastoreNames.contains(name)).collect(Collectors.toList());
+
+        DatastoreService.deleteMultipleDatastoresByName(DatastoreNamesToDelete);
+    }
+
+    public List<Datastore> DatastoresList = new ArrayList<>();
+    public void addDatastoreToList() {
+        DatastoresList.add(new Datastore("ExtP_Unify_ITAAS_U550F_LOCAL_DS09", "VMFS", 3399.68, 744.27, 0.0, 696.07, 0.0, 0.0, 0, 4095.75));
+        DatastoresList.add(new Datastore("ExtP_Unify_ITAAS_U550F_LOCAL_DS10", "VMFS", 3862.76, 281.2, 0.0, 232.99, 0.0, 0.0, 0, 4095.75));
+        DatastoresList.add(new Datastore("Bck_Unify_NFVWL_VNX5600_DS00", "VMFS", 1985.05, 2248.86, 23.0, 2110.45, 0.0, 0.21, 6, 4095.5));
+        DatastoresList.add(new Datastore("Bck_Unify_NFVWL_VNX5600_DS04", "VMFS", 1068.62, 1037.35, 35.0, 979.13, 0.0, 0.23, 6, 2047.75));
+        DatastoresList.add(new Datastore("Bck_Unify_NFVWL_VNX5600_DS01", "VMFS", 1508.99, 699.28, 139.0, 538.76, 1.0, 8.48, 6, 2047.75));
+        DatastoresList.add(new Datastore("MGH_Unify_ITAAS_U600_LOCAL_DS20", "VMFS", 6.97, 4097.36, 10434.0, 4088.78, 3.0, 62.8, 9, 4095.75));
+        DatastoresList.add(new Datastore("P_UnifyDev_ITAAS2_5600", "VMFS", 4.92, 2073.45, 24.0, 2042.83, 76.0, 0.41, 5, 2047.75));
+        DatastoresList.add(new Datastore("CHA_UNIFY_ITAAS_UNITY480_LOCAL_LUN-00", "VMFS", 17.09, 5102.66, 1374.0, 5102.66, 21.0, 41.17, 8, 5119.75));
+        DatastoresList.add(new Datastore("test DS", "VMFS", 3399.68, 744.27, 302.1, 696.07, 0.2, 25.6, 10, 4095.75));
+        DatastoresList.add(new Datastore("test DS1", "VMFS", 3399.68, 744.27, 302.1, 696.07, 0.2, 0.6, 10, 4095.75));
 
     }
 
