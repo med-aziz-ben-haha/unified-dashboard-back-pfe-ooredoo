@@ -15,18 +15,18 @@ import java.util.Map;
 public class GeneralController {
 
     final Neo4jTemplate neo4jTemplate;
-    final com.ooredoo.services.VMService VMService;
     final com.ooredoo.services.GeneralService GeneralService;
 
 
 
-    public GeneralController(VMService VMService, GeneralService GeneralService, Neo4jTemplate neo4jTemplate) {
-        this.VMService = VMService;
+    public GeneralController( GeneralService GeneralService, Neo4jTemplate neo4jTemplate) {
         this.GeneralService = GeneralService;
         this.neo4jTemplate = neo4jTemplate;
     }
 
 // ############################## Relationships Update ########################################################
+
+    //----------------------------- Hypervisor VM ----------------------------------------------
 
     // http://localhost:8089/ooredoo/General/createRelationshipHypervisor-SingleVM
     @PostMapping("/createRelationshipHypervisor-SingleVM")
@@ -70,6 +70,145 @@ public class GeneralController {
         GeneralService.linkHypervisorVMs();
         GeneralService.updateRelationshipBetweenOneHypervisorAndVMs(GeneralService.HypervisorVMList);
         return ResponseEntity.ok("Hypervisor VM List updated successfully");
+    }
+
+    //----------------------------- Datastore VM ----------------------------------------------
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatastore-SingleVM
+    @PostMapping("/createRelationshipDatastore-SingleVM")
+    public void createRelationshipBetweenDatastoreAndVM(@RequestBody Map<String, String> request) {
+        String DatastoreName = request.get("Datastore");
+        String vmName = request.get("VM");
+        GeneralService.createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatastore-SingleVM
+    @DeleteMapping("/deleteRelationshipDatastore-SingleVM")
+    public void deleteRelationshipBetweenDatastoreAndVM(@RequestBody Map<String, String> request) {
+        String DatastoreName = request.get("Datastore");
+        String vmName = request.get("VM");
+        GeneralService.deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatastore-MultipleVMs
+    @PostMapping("/createRelationshipDatastore-MultipleVMs")
+    public void createRelationshipBetweenDatastoreAndVMs(@RequestBody Map<String, Object> request) {
+        String DatastoreName = (String) request.get("Datastore");
+        List<String> vmNames = (List<String>) request.get("VMs");
+        for (String vmName : vmNames) {
+            GeneralService.createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatastore-MultipleVMs
+    @DeleteMapping("/deleteRelationshipDatastore-MultipleVMs")
+    public void deleteRelationshipBetweenDatastoreAndVMs(@RequestBody Map<String, Object> request) {
+        String DatastoreName = (String) request.get("Datastore");
+        List<String> vmNames = (List<String>) request.get("VMs");
+        for (String vmName : vmNames) {
+            GeneralService.deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/update-Datastore-VMList
+    @PostMapping("/update-Datastore-VMList")
+    public ResponseEntity<String> updateOneDatastoreVMList() {
+        GeneralService.linkDatastoreVMs();
+        GeneralService.updateRelationshipBetweenOneDatastoreAndVMs(GeneralService.DatastoreVMList);
+        return ResponseEntity.ok("Datastore VM List updated successfully");
+    }
+
+    //--------------------------------- HypervisorCluster Hypervisor --------------------------------------
+
+    // http://localhost:8089/ooredoo/General/createRelationshipHypervisorCluster-SingleHypervisor
+    @PostMapping("/createRelationshipHypervisorCluster-SingleHypervisor")
+    public void createRelationshipBetweenHypervisorClusterAndHypervisor(@RequestBody Map<String, String> request) {
+        String HypervisorClusterName = request.get("HypervisorCluster");
+        String HypervisorName = request.get("Hypervisor");
+        GeneralService.createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipHypervisorCluster-SingleHypervisor
+    @DeleteMapping("/deleteRelationshipHypervisorCluster-SingleHypervisor")
+    public void deleteRelationshipBetweenHypervisorClusterAndHypervisor(@RequestBody Map<String, String> request) {
+        String HypervisorClusterName = request.get("HypervisorCluster");
+        String HypervisorName = request.get("Hypervisor");
+        GeneralService.deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+
+    // http://localhost:8089/ooredoo/General/createRelationshipHypervisorCluster-MultipleHypervisors
+    @PostMapping("/createRelationshipHypervisorCluster-MultipleHypervisors")
+    public void createRelationshipBetweenHypervisorClusterAndHypervisors(@RequestBody Map<String, Object> request) {
+        String HypervisorClusterName = (String) request.get("HypervisorCluster");
+        List<String> HypervisorNames = (List<String>) request.get("Hypervisors");
+        for (String HypervisorName : HypervisorNames) {
+            GeneralService.createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipHypervisorCluster-MultipleHypervisors
+    @DeleteMapping("/deleteRelationshipHypervisorCluster-MultipleHypervisors")
+    public void deleteRelationshipBetweenHypervisorClusterAndHypervisors(@RequestBody Map<String, Object> request) {
+        String HypervisorClusterName = (String) request.get("HypervisorCluster");
+        List<String> HypervisorNames = (List<String>) request.get("Hypervisors");
+        for (String HypervisorName : HypervisorNames) {
+            GeneralService.deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/update-HypervisorCluster-HypervisorList
+    @PostMapping("/update-HypervisorCluster-HypervisorList")
+    public ResponseEntity<String> updateOneHypervisorClusterHypervisorList() {
+        GeneralService.linkHypervisorClusterHypervisors();
+        GeneralService.updateRelationshipBetweenOneHypervisorClusterAndHypervisors(GeneralService.HypervisorClusterHypervisorList);
+        return ResponseEntity.ok("HypervisorCluster Hypervisor List updated successfully");
+    }
+
+
+    //--------------------------------- DatastoreCluster Datastore --------------------------------------
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatastoreCluster-SingleDatastore
+    @PostMapping("/createRelationshipDatastoreCluster-SingleDatastore")
+    public void createRelationshipBetweenDatastoreClusterAndDatastore(@RequestBody Map<String, String> request) {
+        String DatastoreClusterName = request.get("DatastoreCluster");
+        String DatastoreName = request.get("Datastore");
+        GeneralService.createRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatastoreCluster-SingleDatastore
+    @DeleteMapping("/deleteRelationshipDatastoreCluster-SingleDatastore")
+    public void deleteRelationshipBetweenDatastoreClusterAndDatastore(@RequestBody Map<String, String> request) {
+        String DatastoreClusterName = request.get("DatastoreCluster");
+        String DatastoreName = request.get("Datastore");
+        GeneralService.deleteRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+    }
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatastoreCluster-MultipleDatastores
+    @PostMapping("/createRelationshipDatastoreCluster-MultipleDatastores")
+    public void createRelationshipBetweenDatastoreClusterAndDatastores(@RequestBody Map<String, Object> request) {
+        String DatastoreClusterName = (String) request.get("DatastoreCluster");
+        List<String> DatastoreNames = (List<String>) request.get("Datastores");
+        for (String DatastoreName : DatastoreNames) {
+            GeneralService.createRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatastoreCluster-MultipleDatastores
+    @DeleteMapping("/deleteRelationshipDatastoreCluster-MultipleDatastores")
+    public void deleteRelationshipBetweenDatastoreClusterAndDatastores(@RequestBody Map<String, Object> request) {
+        String DatastoreClusterName = (String) request.get("DatastoreCluster");
+        List<String> DatastoreNames = (List<String>) request.get("Datastores");
+        for (String DatastoreName : DatastoreNames) {
+            GeneralService.deleteRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/update-DatastoreCluster-DatastoreList
+    @PostMapping("/update-DatastoreCluster-DatastoreList")
+    public ResponseEntity<String> updateOneDatastoreClusterDatastoreList() {
+        GeneralService.linkDatastoreClusterDatastores();
+        GeneralService.updateRelationshipBetweenOneDatastoreClusterAndDatastores(GeneralService.DatastoreClusterDatastoreList);
+        return ResponseEntity.ok("DatastoreCluster Datastore List updated successfully");
     }
 
 // ############################## Components Update ########################################################

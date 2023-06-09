@@ -1,7 +1,7 @@
 package com.ooredoo.services;
 
 import com.ooredoo.entities.*;
-import com.ooredoo.repositories.HypervisorRepository;
+import com.ooredoo.repositories.*;
 import org.neo4j.driver.types.Relationship;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 @Service
 public class GeneralService {
 
+    private final DatastoreClusterRepository DatastoreClusterRepository;
+    private final DatastoreRepository DatastoreRepository;
+    private final HypervisorClusterRepository HypervisorClusterRepository;
     private final HypervisorRepository HypervisorRepository;
 
     private final DatacenterService DatacenterService;
@@ -21,10 +24,12 @@ public class GeneralService {
     private final VMService VMService;
 
 
-    public GeneralService(HypervisorRepository HypervisorRepository, DatacenterService DatacenterService, DatastoreClusterService DatastoreClusterService,HypervisorClusterService HypervisorClusterService,VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
+    public GeneralService(DatastoreClusterRepository DatastoreClusterRepository,DatastoreRepository DatastoreRepository, HypervisorClusterRepository HypervisorClusterRepository, HypervisorRepository HypervisorRepository, DatacenterService DatacenterService, DatastoreClusterService DatastoreClusterService, HypervisorClusterService HypervisorClusterService, VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
 
-        this.HypervisorRepository = HypervisorRepository;
-
+        this.DatastoreClusterRepository = DatastoreClusterRepository;
+        this.DatastoreRepository = DatastoreRepository;
+        this.HypervisorRepository=HypervisorRepository;
+        this.HypervisorClusterRepository=HypervisorClusterRepository;
 
         this.DatacenterService = DatacenterService;
         this.DatastoreClusterService = DatastoreClusterService;
@@ -64,6 +69,86 @@ public class GeneralService {
 
     }
 
+    //-------------------- Update Datastore VM  relationship database ------------------
+    public Relationship createRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
+        return DatastoreRepository.createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+    public void deleteRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
+        DatastoreRepository.deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+
+    public Map<String, Object> DatastoreVMList = new HashMap<>();
+    public void linkDatastoreVMs(){
+        DatastoreVMList.put("Datastore", "DatastoreTest1");
+        DatastoreVMList.put("VMs", Arrays.asList("TestVM1", "TestVM"));
+    }
+    public void updateRelationshipBetweenOneDatastoreAndVMs(Map<String, Object> DatastoreVMList) {
+        String DatastoreName = (String) DatastoreVMList.get("Datastore");
+        List<String> vmList = (List<String>) DatastoreVMList.get("VMs");
+
+        List<VM> currentVMs = VMService.getVMsByDatastoreName(DatastoreName);// Get the current VMs associated with the Datastore
+
+        for (String vmName : vmList) // Create relationships for new VMs
+            if (!currentVMs.stream().anyMatch(vm -> vm.getName().equals(vmName))) createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+
+        for (VM vm : currentVMs) // Delete relationships for VMs not in the list
+            if (!vmList.contains(vm.getName())) deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vm.getName());
+
+    }
+
+    //-------------------- Update HypervisorCluster Hypervisor  relationship database ------------------
+    public Relationship createRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
+        return HypervisorClusterRepository.createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+    public void deleteRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
+        HypervisorClusterRepository.deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+
+    public Map<String, Object> HypervisorClusterHypervisorList = new HashMap<>();
+    public void linkHypervisorClusterHypervisors(){
+        HypervisorClusterHypervisorList.put("HypervisorCluster", "HypervisorClusterTest1");
+        HypervisorClusterHypervisorList.put("Hypervisors", Arrays.asList("TestHypervisor1", "TestHypervisor"));
+    }
+    public void updateRelationshipBetweenOneHypervisorClusterAndHypervisors(Map<String, Object> HypervisorClusterHypervisorList) {
+        String HypervisorClusterName = (String) HypervisorClusterHypervisorList.get("HypervisorCluster");
+        List<String> HypervisorList = (List<String>) HypervisorClusterHypervisorList.get("Hypervisors");
+
+        List<Hypervisor> currentHypervisors = HypervisorService.getHypervisorsByHypervisorClusterName(HypervisorClusterName);// Get the current Hypervisors associated with the HypervisorCluster
+
+        for (String HypervisorName : HypervisorList) // Create relationships for new Hypervisors
+            if (!currentHypervisors.stream().anyMatch(Hypervisor -> Hypervisor.getName().equals(HypervisorName))) createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+
+        for (Hypervisor Hypervisor : currentHypervisors) // Delete relationships for Hypervisors not in the list
+            if (!HypervisorList.contains(Hypervisor.getName())) deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, Hypervisor.getName());
+
+    }
+
+    //-------------------- Update DatastoreCluster Datastore  relationship database ------------------
+    public Relationship createRelationshipBetweenDatastoreClusterAndDatastore(String DatastoreClusterName, String DatastoreName) {
+        return DatastoreClusterRepository.createRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+    }
+    public void deleteRelationshipBetweenDatastoreClusterAndDatastore(String DatastoreClusterName, String DatastoreName) {
+        DatastoreClusterRepository.deleteRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+    }
+
+    public Map<String, Object> DatastoreClusterDatastoreList = new HashMap<>();
+    public void linkDatastoreClusterDatastores(){
+        DatastoreClusterDatastoreList.put("DatastoreCluster", "DatastoreClusterTest1");
+        DatastoreClusterDatastoreList.put("Datastores", Arrays.asList("TestDatastore1", "TestDatastore"));
+    }
+    public void updateRelationshipBetweenOneDatastoreClusterAndDatastores(Map<String, Object> DatastoreClusterDatastoreList) {
+        String DatastoreClusterName = (String) DatastoreClusterDatastoreList.get("DatastoreCluster");
+        List<String> DatastoreList = (List<String>) DatastoreClusterDatastoreList.get("Datastores");
+
+        List<Datastore> currentDatastores = DatastoreService.getDatastoresByDatastoreClusterName(DatastoreClusterName);// Get the current Datastores associated with the DatastoreCluster
+
+        for (String DatastoreName : DatastoreList) // Create relationships for new Datastores
+            if (!currentDatastores.stream().anyMatch(Datastore -> Datastore.getName().equals(DatastoreName))) createRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);
+
+        for (Datastore Datastore : currentDatastores) // Delete relationships for Datastores not in the list
+            if (!DatastoreList.contains(Datastore.getName())) deleteRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, Datastore.getName());
+
+    }
 
 // ############################## Components Update ########################################################
 

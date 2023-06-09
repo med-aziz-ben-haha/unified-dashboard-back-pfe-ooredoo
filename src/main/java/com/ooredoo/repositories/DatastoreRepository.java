@@ -2,6 +2,7 @@ package com.ooredoo.repositories;
 
 import com.ooredoo.entities.Datastore;
 import com.ooredoo.entities.VM;
+import org.neo4j.driver.types.Relationship;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,6 +37,15 @@ public interface DatastoreRepository extends Neo4jRepository<Datastore, Long> {
     //delete
     void deleteByName(String name);
     void deleteAllByNameIn(List<String> names);
+
+    //create Datastore VM relationship
+    @Query("MATCH (Datastore:Datastore {name: $DatastoreName}), (vm:VM {name: $vmName}) CREATE (Datastore)-[r:run]->(vm)")
+    Relationship createRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName);
+
+    //delete Datastore VM relationship
+    @Query("MATCH (Datastore:Datastore {name: $DatastoreName})-[r:run]->(vm:VM {name: $vmName}) DELETE r")
+    void deleteRelationshipBetweenDatastoreAndVM(@Param("DatastoreName") String DatastoreName, @Param("vmName") String vmName);
+
 
 
 }
