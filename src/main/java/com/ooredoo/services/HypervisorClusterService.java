@@ -58,7 +58,7 @@ public class HypervisorClusterService {
     public Collection<HypervisorCluster> getAllHypervisorClusters() {
         return HypervisorClusterRepository.getAllHypervisorClusters();
     }
-    //display hypervisor list of a HypervisorCluster
+    //display hypervisorCluster list of a Datacenter
     public List<HypervisorCluster> getHypervisorClustersByDatacenterName(String DatacenterName) { return HypervisorClusterRepository.findHypervisorClustersByDatacenterName(DatacenterName);}
 
     //-------------------- add ---------------------------------

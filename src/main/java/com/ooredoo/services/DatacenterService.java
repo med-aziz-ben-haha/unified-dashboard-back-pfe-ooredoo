@@ -61,7 +61,7 @@ public class DatacenterService {
         return Datacenters;
     }
 
-    //display Datacenters and their HypervisorClusters list
+    //display Datacenters and their Datastores list
     public Collection<Datacenter> getAllDatacentersandDatastores() {
         Collection<Datacenter> Datacenters = DatacenterRepository.getAllDatacenters();
 

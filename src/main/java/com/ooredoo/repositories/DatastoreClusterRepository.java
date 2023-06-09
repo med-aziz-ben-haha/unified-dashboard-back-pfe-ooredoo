@@ -1,6 +1,7 @@
 package com.ooredoo.repositories;
 
 import com.ooredoo.entities.DatastoreCluster;
+import com.ooredoo.entities.HypervisorCluster;
 import org.neo4j.driver.types.Relationship;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -17,6 +18,9 @@ public interface DatastoreClusterRepository extends Neo4jRepository<DatastoreClu
     //get DatastoreClusters only
     @Query("MATCH (n:DatastoreCluster) RETURN n")
     Collection<DatastoreCluster> getAllDatastoreClusters();
+    //get DatastoreClusters based on Datacenter
+    @Query("MATCH (h:Datacenter {name: $name})-[:contains]->(DatastoreCluster:DatastoreCluster) RETURN DatastoreCluster")
+    List<DatastoreCluster> findDatastoreClustersByDatacenterName(@Param("name") String DatastoreClusterName);
 
     //add DatastoreCluster
     DatastoreCluster save(DatastoreCluster DatastoreCluster);

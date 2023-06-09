@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @Service
 public class GeneralService {
 
+    private final DatacenterRepository DatacenterRepository;
     private final DatastoreClusterRepository DatastoreClusterRepository;
     private final DatastoreRepository DatastoreRepository;
     private final HypervisorClusterRepository HypervisorClusterRepository;
@@ -24,8 +25,9 @@ public class GeneralService {
     private final VMService VMService;
 
 
-    public GeneralService(DatastoreClusterRepository DatastoreClusterRepository,DatastoreRepository DatastoreRepository, HypervisorClusterRepository HypervisorClusterRepository, HypervisorRepository HypervisorRepository, DatacenterService DatacenterService, DatastoreClusterService DatastoreClusterService, HypervisorClusterService HypervisorClusterService, VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
+    public GeneralService(DatacenterRepository DatacenterRepository,DatastoreClusterRepository DatastoreClusterRepository,DatastoreRepository DatastoreRepository, HypervisorClusterRepository HypervisorClusterRepository, HypervisorRepository HypervisorRepository, DatacenterService DatacenterService, DatastoreClusterService DatastoreClusterService, HypervisorClusterService HypervisorClusterService, VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
 
+        this.DatacenterRepository = DatacenterRepository;
         this.DatastoreClusterRepository = DatastoreClusterRepository;
         this.DatastoreRepository = DatastoreRepository;
         this.HypervisorRepository=HypervisorRepository;
@@ -42,84 +44,30 @@ public class GeneralService {
 
 // ############################## Relationships Update ########################################################
 
-    //-------------------- Update Hypervisor VM  relationship database ------------------
-    public Relationship createRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
-        return HypervisorRepository.createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
+    //-------------------- Update Datacenter DatastoreCluster  relationship database ------------------
+    public Relationship createRelationshipBetweenDatacenterAndDatastoreCluster(String DatacenterName, String DatastoreClusterName) {
+        return DatacenterRepository.createRelationshipBetweenDatacenterAndDatastoreCluster(DatacenterName, DatastoreClusterName);
     }
-    public void deleteRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
-        HypervisorRepository.deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
-    }
-
-    public Map<String, Object> HypervisorVMList = new HashMap<>();
-    public void linkHypervisorVMs(){
-        HypervisorVMList.put("Hypervisor", "HypervisorTest1");
-        HypervisorVMList.put("VMs", Arrays.asList("TestVM1", /*"TestVM2",*/ "TestVM"));
-    }
-    public void updateRelationshipBetweenOneHypervisorAndVMs(Map<String, Object> hypervisorVMList) {
-        String hypervisorName = (String) hypervisorVMList.get("Hypervisor");
-        List<String> vmList = (List<String>) hypervisorVMList.get("VMs");
-
-        List<VM> currentVMs = VMService.getVMsByHypervisorName(hypervisorName);// Get the current VMs associated with the hypervisor
-
-        for (String vmName : vmList) // Create relationships for new VMs
-            if (!currentVMs.stream().anyMatch(vm -> vm.getName().equals(vmName))) createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
-
-        for (VM vm : currentVMs) // Delete relationships for VMs not in the list
-            if (!vmList.contains(vm.getName())) deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vm.getName());
-
+    public void deleteRelationshipBetweenDatacenterAndDatastoreCluster(String DatacenterName, String DatastoreClusterName) {
+        DatacenterRepository.deleteRelationshipBetweenDatacenterAndDatastoreCluster(DatacenterName, DatastoreClusterName);
     }
 
-    //-------------------- Update Datastore VM  relationship database ------------------
-    public Relationship createRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
-        return DatastoreRepository.createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    public Map<String, Object> DatacenterDatastoreClusterList = new HashMap<>();
+    public void linkDatacenterDatastoreClusters(){
+        DatacenterDatastoreClusterList.put("Datacenter", "DatacenterTest1");
+        DatacenterDatastoreClusterList.put("DatastoreClusters", Arrays.asList("TestDatastoreCluster1", "TestDatastoreCluster"));
     }
-    public void deleteRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
-        DatastoreRepository.deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
-    }
+    public void updateRelationshipBetweenOneDatacenterAndDatastoreClusters(Map<String, Object> DatacenterDatastoreClusterList) {
+        String DatacenterName = (String) DatacenterDatastoreClusterList.get("Datacenter");
+        List<String> DatastoreClusterList = (List<String>) DatacenterDatastoreClusterList.get("DatastoreClusters");
 
-    public Map<String, Object> DatastoreVMList = new HashMap<>();
-    public void linkDatastoreVMs(){
-        DatastoreVMList.put("Datastore", "DatastoreTest1");
-        DatastoreVMList.put("VMs", Arrays.asList("TestVM1", "TestVM"));
-    }
-    public void updateRelationshipBetweenOneDatastoreAndVMs(Map<String, Object> DatastoreVMList) {
-        String DatastoreName = (String) DatastoreVMList.get("Datastore");
-        List<String> vmList = (List<String>) DatastoreVMList.get("VMs");
+        List<DatastoreCluster> currentDatastoreClusters = DatastoreClusterService.getDatastoreClustersByDatacenterName(DatacenterName);// Get the current DatastoreClusters associated with the Datacenter
 
-        List<VM> currentVMs = VMService.getVMsByDatastoreName(DatastoreName);// Get the current VMs associated with the Datastore
+        for (String DatastoreClusterName : DatastoreClusterList) // Create relationships for new DatastoreClusters
+            if (!currentDatastoreClusters.stream().anyMatch(DatastoreCluster -> DatastoreCluster.getName().equals(DatastoreClusterName))) createRelationshipBetweenDatacenterAndDatastoreCluster(DatacenterName, DatastoreClusterName);
 
-        for (String vmName : vmList) // Create relationships for new VMs
-            if (!currentVMs.stream().anyMatch(vm -> vm.getName().equals(vmName))) createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
-
-        for (VM vm : currentVMs) // Delete relationships for VMs not in the list
-            if (!vmList.contains(vm.getName())) deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vm.getName());
-
-    }
-
-    //-------------------- Update HypervisorCluster Hypervisor  relationship database ------------------
-    public Relationship createRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
-        return HypervisorClusterRepository.createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
-    }
-    public void deleteRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
-        HypervisorClusterRepository.deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
-    }
-
-    public Map<String, Object> HypervisorClusterHypervisorList = new HashMap<>();
-    public void linkHypervisorClusterHypervisors(){
-        HypervisorClusterHypervisorList.put("HypervisorCluster", "HypervisorClusterTest1");
-        HypervisorClusterHypervisorList.put("Hypervisors", Arrays.asList("TestHypervisor1", "TestHypervisor"));
-    }
-    public void updateRelationshipBetweenOneHypervisorClusterAndHypervisors(Map<String, Object> HypervisorClusterHypervisorList) {
-        String HypervisorClusterName = (String) HypervisorClusterHypervisorList.get("HypervisorCluster");
-        List<String> HypervisorList = (List<String>) HypervisorClusterHypervisorList.get("Hypervisors");
-
-        List<Hypervisor> currentHypervisors = HypervisorService.getHypervisorsByHypervisorClusterName(HypervisorClusterName);// Get the current Hypervisors associated with the HypervisorCluster
-
-        for (String HypervisorName : HypervisorList) // Create relationships for new Hypervisors
-            if (!currentHypervisors.stream().anyMatch(Hypervisor -> Hypervisor.getName().equals(HypervisorName))) createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
-
-        for (Hypervisor Hypervisor : currentHypervisors) // Delete relationships for Hypervisors not in the list
-            if (!HypervisorList.contains(Hypervisor.getName())) deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, Hypervisor.getName());
+        for (DatastoreCluster DatastoreCluster : currentDatastoreClusters) // Delete relationships for DatastoreClusters not in the list
+            if (!DatastoreClusterList.contains(DatastoreCluster.getName())) deleteRelationshipBetweenDatacenterAndDatastoreCluster(DatacenterName, DatastoreCluster.getName());
 
     }
 
@@ -149,6 +97,119 @@ public class GeneralService {
             if (!DatastoreList.contains(Datastore.getName())) deleteRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, Datastore.getName());
 
     }
+
+
+    //-------------------- Update Datastore VM  relationship database ------------------
+    public Relationship createRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
+        return DatastoreRepository.createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+    public void deleteRelationshipBetweenDatastoreAndVM(String DatastoreName, String vmName) {
+        DatastoreRepository.deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+    }
+
+    public Map<String, Object> DatastoreVMList = new HashMap<>();
+    public void linkDatastoreVMs(){
+        DatastoreVMList.put("Datastore", "DatastoreTest1");
+        DatastoreVMList.put("VMs", Arrays.asList("TestVM1", "TestVM"));
+    }
+    public void updateRelationshipBetweenOneDatastoreAndVMs(Map<String, Object> DatastoreVMList) {
+        String DatastoreName = (String) DatastoreVMList.get("Datastore");
+        List<String> vmList = (List<String>) DatastoreVMList.get("VMs");
+
+        List<VM> currentVMs = VMService.getVMsByDatastoreName(DatastoreName);// Get the current VMs associated with the Datastore
+
+        for (String vmName : vmList) // Create relationships for new VMs
+            if (!currentVMs.stream().anyMatch(vm -> vm.getName().equals(vmName))) createRelationshipBetweenDatastoreAndVM(DatastoreName, vmName);
+
+        for (VM vm : currentVMs) // Delete relationships for VMs not in the list
+            if (!vmList.contains(vm.getName())) deleteRelationshipBetweenDatastoreAndVM(DatastoreName, vm.getName());
+
+    }
+
+
+    //-------------------- Update Datacenter HypervisorCluster  relationship database ------------------
+    public Relationship createRelationshipBetweenDatacenterAndHypervisorCluster(String DatacenterName, String HypervisorClusterName) {
+        return DatacenterRepository.createRelationshipBetweenDatacenterAndHypervisorCluster(DatacenterName, HypervisorClusterName);
+    }
+    public void deleteRelationshipBetweenDatacenterAndHypervisorCluster(String DatacenterName, String HypervisorClusterName) {
+        DatacenterRepository.deleteRelationshipBetweenDatacenterAndHypervisorCluster(DatacenterName, HypervisorClusterName);
+    }
+
+    public Map<String, Object> DatacenterHypervisorClusterList = new HashMap<>();
+    public void linkDatacenterHypervisorClusters(){
+        DatacenterHypervisorClusterList.put("Datacenter", "DatacenterTest1");
+        DatacenterHypervisorClusterList.put("HypervisorClusters", Arrays.asList("TestHypervisorCluster1", "TestHypervisorCluster"));
+    }
+    public void updateRelationshipBetweenOneDatacenterAndHypervisorClusters(Map<String, Object> DatacenterHypervisorClusterList) {
+        String DatacenterName = (String) DatacenterHypervisorClusterList.get("Datacenter");
+        List<String> HypervisorClusterList = (List<String>) DatacenterHypervisorClusterList.get("HypervisorClusters");
+
+        List<HypervisorCluster> currentHypervisorClusters = HypervisorClusterService.getHypervisorClustersByDatacenterName(DatacenterName);// Get the current HypervisorClusters associated with the Datacenter
+
+        for (String HypervisorClusterName : HypervisorClusterList) // Create relationships for new HypervisorClusters
+            if (!currentHypervisorClusters.stream().anyMatch(HypervisorCluster -> HypervisorCluster.getName().equals(HypervisorClusterName))) createRelationshipBetweenDatacenterAndHypervisorCluster(DatacenterName, HypervisorClusterName);
+
+        for (HypervisorCluster HypervisorCluster : currentHypervisorClusters) // Delete relationships for HypervisorClusters not in the list
+            if (!HypervisorClusterList.contains(HypervisorCluster.getName())) deleteRelationshipBetweenDatacenterAndHypervisorCluster(DatacenterName, HypervisorCluster.getName());
+
+    }
+
+
+    //-------------------- Update HypervisorCluster Hypervisor  relationship database ------------------
+    public Relationship createRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
+        return HypervisorClusterRepository.createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+    public void deleteRelationshipBetweenHypervisorClusterAndHypervisor(String HypervisorClusterName, String HypervisorName) {
+        HypervisorClusterRepository.deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+    }
+
+    public Map<String, Object> HypervisorClusterHypervisorList = new HashMap<>();
+    public void linkHypervisorClusterHypervisors(){
+        HypervisorClusterHypervisorList.put("HypervisorCluster", "HypervisorClusterTest1");
+        HypervisorClusterHypervisorList.put("Hypervisors", Arrays.asList("TestHypervisor1", "TestHypervisor"));
+    }
+    public void updateRelationshipBetweenOneHypervisorClusterAndHypervisors(Map<String, Object> HypervisorClusterHypervisorList) {
+        String HypervisorClusterName = (String) HypervisorClusterHypervisorList.get("HypervisorCluster");
+        List<String> HypervisorList = (List<String>) HypervisorClusterHypervisorList.get("Hypervisors");
+
+        List<Hypervisor> currentHypervisors = HypervisorService.getHypervisorsByHypervisorClusterName(HypervisorClusterName);// Get the current Hypervisors associated with the HypervisorCluster
+
+        for (String HypervisorName : HypervisorList) // Create relationships for new Hypervisors
+            if (!currentHypervisors.stream().anyMatch(Hypervisor -> Hypervisor.getName().equals(HypervisorName))) createRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, HypervisorName);
+
+        for (Hypervisor Hypervisor : currentHypervisors) // Delete relationships for Hypervisors not in the list
+            if (!HypervisorList.contains(Hypervisor.getName())) deleteRelationshipBetweenHypervisorClusterAndHypervisor(HypervisorClusterName, Hypervisor.getName());
+
+    }
+
+
+    //-------------------- Update Hypervisor VM  relationship database ------------------
+    public Relationship createRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
+        return HypervisorRepository.createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
+    }
+    public void deleteRelationshipBetweenHypervisorAndVM(String hypervisorName, String vmName) {
+        HypervisorRepository.deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
+    }
+
+    public Map<String, Object> HypervisorVMList = new HashMap<>();
+    public void linkHypervisorVMs(){
+        HypervisorVMList.put("Hypervisor", "HypervisorTest1");
+        HypervisorVMList.put("VMs", Arrays.asList("TestVM1", /*"TestVM2",*/ "TestVM"));
+    }
+    public void updateRelationshipBetweenOneHypervisorAndVMs(Map<String, Object> hypervisorVMList) {
+        String hypervisorName = (String) hypervisorVMList.get("Hypervisor");
+        List<String> vmList = (List<String>) hypervisorVMList.get("VMs");
+
+        List<VM> currentVMs = VMService.getVMsByHypervisorName(hypervisorName);// Get the current VMs associated with the hypervisor
+
+        for (String vmName : vmList) // Create relationships for new VMs
+            if (!currentVMs.stream().anyMatch(vm -> vm.getName().equals(vmName))) createRelationshipBetweenHypervisorAndVM(hypervisorName, vmName);
+
+        for (VM vm : currentVMs) // Delete relationships for VMs not in the list
+            if (!vmList.contains(vm.getName())) deleteRelationshipBetweenHypervisorAndVM(hypervisorName, vm.getName());
+
+    }
+
 
 // ############################## Components Update ########################################################
 

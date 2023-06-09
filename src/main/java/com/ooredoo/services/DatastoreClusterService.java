@@ -2,6 +2,7 @@ package com.ooredoo.services;
 
 import com.ooredoo.entities.Datastore;
 import com.ooredoo.entities.DatastoreCluster;
+import com.ooredoo.entities.HypervisorCluster;
 import com.ooredoo.entities.VM;
 import com.ooredoo.repositories.DatastoreClusterRepository;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,10 @@ public class DatastoreClusterService {
     public Collection<DatastoreCluster> getAllDatastoreClusters() {
         return DatastoreClusterRepository.getAllDatastoreClusters();
     }
+
+    //display DatastoreCluster list of a Datacenter
+    public List<DatastoreCluster> getDatastoreClustersByDatacenterName(String DatacenterName) { return DatastoreClusterRepository.findDatastoreClustersByDatacenterName(DatacenterName);}
+
 
     //-------------------- add ---------------------------------
     //add single
