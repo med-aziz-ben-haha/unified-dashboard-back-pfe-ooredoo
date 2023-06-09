@@ -1,12 +1,9 @@
 package com.ooredoo.services;
 
-import com.ooredoo.entities.Datastore;
-import com.ooredoo.entities.Hypervisor;
-import com.ooredoo.entities.VM;
+import com.ooredoo.entities.*;
 import com.ooredoo.repositories.HypervisorRepository;
 import org.neo4j.driver.types.Relationship;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,15 +12,27 @@ import java.util.stream.Collectors;
 public class GeneralService {
 
     private final HypervisorRepository HypervisorRepository;
-    private final VMService VMService;
-    private final HypervisorService HypervisorService;
-    private final DatastoreService DatastoreService;
 
-    public GeneralService(HypervisorRepository HypervisorRepository, VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
+    private final DatacenterService DatacenterService;
+    private final DatastoreClusterService DatastoreClusterService;
+    private final DatastoreService DatastoreService;
+    private final HypervisorClusterService HypervisorClusterService;
+    private final HypervisorService HypervisorService;
+    private final VMService VMService;
+
+
+    public GeneralService(HypervisorRepository HypervisorRepository, DatacenterService DatacenterService, DatastoreClusterService DatastoreClusterService,HypervisorClusterService HypervisorClusterService,VMService VMService, HypervisorService HypervisorService, DatastoreService DatastoreService) {
+
         this.HypervisorRepository = HypervisorRepository;
-        this.VMService  = VMService;
-        this.HypervisorService = HypervisorService;
+
+
+        this.DatacenterService = DatacenterService;
+        this.DatastoreClusterService = DatastoreClusterService;
         this.DatastoreService = DatastoreService;
+        this.HypervisorClusterService = HypervisorClusterService;
+        this.HypervisorService = HypervisorService;
+        this.VMService  = VMService;
+
     }
 
 // ############################## Relationships Update ########################################################
@@ -58,6 +67,59 @@ public class GeneralService {
 
 // ############################## Components Update ########################################################
 
+
+    //-------------------- Update Datacenter database ------------------
+    public void updateDatacenterDatabase(List<Datacenter> Datacenters) {
+        Collection<Datacenter> existingDatacenters = DatacenterService.getAllDatacenters(); // Retrieve all existing Datacenters from the database
+        List<String> existingDatacenterNames = existingDatacenters.stream().map(Datacenter::getName).collect(Collectors.toList());
+
+        // Add or update VMs
+        for (Datacenter Datacenter : Datacenters) {
+            if (existingDatacenterNames.contains(Datacenter.getName()))  DatacenterService.updateDatacenterByName(Datacenter.getName(), Datacenter);  // Datacenter already exists, update it
+            else DatacenterService.addMultipleDatacenters(Collections.singletonList(Datacenter)); // Datacenter is new, add it
+        }
+        // Delete Datacenters not present in the input list
+        List<String> inputDatacenterNames = Datacenters.stream().map(Datacenter::getName).collect(Collectors.toList());
+        List<String> DatacenterNamesToDelete = existingDatacenterNames.stream().filter(name -> !inputDatacenterNames.contains(name)).collect(Collectors.toList());
+
+        DatacenterService.deleteMultipleDatacentersByName(DatacenterNamesToDelete);
+    }
+
+    public List<Datacenter> DatacentersList = new ArrayList<>();
+    public void addDatacenterToList() {
+        DatacentersList.add(new Datacenter("OT-Mghira", 9, 120, 26, 377));
+        DatacentersList.add(new Datacenter("Datacenter", 0, 80, 11, 246));
+        DatacentersList.add(new Datacenter("OT-Charguia", 4, 87, 19, 546));
+        DatacentersList.add(new Datacenter("Test Datacenter", 4, 87, 19, 546));
+
+    }
+
+    //-------------------- Update DatastoreCluster database ------------------
+    public void updateDatastoreClusterDatabase(List<DatastoreCluster> DatastoreClusters) {
+        Collection<DatastoreCluster> existingDatastoreClusters = DatastoreClusterService.getAllDatastoreClusters(); // Retrieve all existing DatastoreClusters from the database
+        List<String> existingDatastoreClusterNames = existingDatastoreClusters.stream().map(DatastoreCluster::getName).collect(Collectors.toList());
+
+        // Add or update VMs
+        for (DatastoreCluster DatastoreCluster : DatastoreClusters) {
+            if (existingDatastoreClusterNames.contains(DatastoreCluster.getName()))  DatastoreClusterService.updateDatastoreClusterByName(DatastoreCluster.getName(), DatastoreCluster);  // DatastoreCluster already exists, update it
+            else DatastoreClusterService.addMultipleDatastoreClusters(Collections.singletonList(DatastoreCluster)); // DatastoreCluster is new, add it
+        }
+        // Delete DatastoreClusters not present in the input list
+        List<String> inputDatastoreClusterNames = DatastoreClusters.stream().map(DatastoreCluster::getName).collect(Collectors.toList());
+        List<String> DatastoreClusterNamesToDelete = existingDatastoreClusterNames.stream().filter(name -> !inputDatastoreClusterNames.contains(name)).collect(Collectors.toList());
+
+        DatastoreClusterService.deleteMultipleDatastoreClustersByName(DatastoreClusterNamesToDelete);
+    }
+
+    public List<DatastoreCluster> DatastoreClustersList = new ArrayList<>();
+    public void addDatastoreClusterToList() {
+        DatastoreClustersList.add(new DatastoreCluster("MGH-UNIFY_NFV_WLD_BCK_DSC", 8220.82, 12286.5));
+        DatastoreClustersList.add(new DatastoreCluster("CHA-UNIFY_NFV_WLD_DSC", 2227.0, 8191.5));
+        DatastoreClustersList.add(new DatastoreCluster("MGH-UNIFY_ITAAS_U550F_LOCAL", 7262.44, 8191.5));
+        DatastoreClustersList.add(new DatastoreCluster("Test DatastoreCluster", 7262.44, 8191.5));
+
+    }
+
     //-------------------- Update Datastore database ------------------
     public void updateDatastoreDatabase(List<Datastore> Datastores) {
         Collection<Datastore> existingDatastores = DatastoreService.getAllDatastores(); // Retrieve all existing Datastores from the database
@@ -87,6 +149,32 @@ public class GeneralService {
         DatastoresList.add(new Datastore("CHA_UNIFY_ITAAS_UNITY480_LOCAL_LUN-00", "VMFS", 17.09, 5102.66, 1374.0, 5102.66, 21.0, 41.17, 8, 5119.75));
         DatastoresList.add(new Datastore("test DS", "VMFS", 3399.68, 744.27, 302.1, 696.07, 0.2, 25.6, 10, 4095.75));
         DatastoresList.add(new Datastore("test DS1", "VMFS", 3399.68, 744.27, 302.1, 696.07, 0.2, 0.6, 10, 4095.75));
+
+    }
+
+    //-------------------- Update HypervisorCluster database ------------------
+    public void updateHypervisorClusterDatabase(List<HypervisorCluster> HypervisorClusters) {
+        Collection<HypervisorCluster> existingHypervisorClusters = HypervisorClusterService.getAllHypervisorClusters(); // Retrieve all existing HypervisorClusters from the database
+        List<String> existingHypervisorClusterNames = existingHypervisorClusters.stream().map(HypervisorCluster::getName).collect(Collectors.toList());
+
+        // Add or update VMs
+        for (HypervisorCluster HypervisorCluster : HypervisorClusters) {
+            if (existingHypervisorClusterNames.contains(HypervisorCluster.getName()))  HypervisorClusterService.updateHypervisorClusterByName(HypervisorCluster.getName(), HypervisorCluster);  // HypervisorCluster already exists, update it
+            else HypervisorClusterService.addMultipleHypervisorClusters(Collections.singletonList(HypervisorCluster)); // HypervisorCluster is new, add it
+        }
+        // Delete HypervisorClusters not present in the input list
+        List<String> inputHypervisorClusterNames = HypervisorClusters.stream().map(HypervisorCluster::getName).collect(Collectors.toList());
+        List<String> HypervisorClusterNamesToDelete = existingHypervisorClusterNames.stream().filter(name -> !inputHypervisorClusterNames.contains(name)).collect(Collectors.toList());
+
+        HypervisorClusterService.deleteMultipleHypervisorClustersByName(HypervisorClusterNamesToDelete);
+    }
+
+    public List<HypervisorCluster> HypervisorClustersList = new ArrayList<>();
+    public void addHypervisorClusterToList() {
+        HypervisorClustersList.add(new HypervisorCluster("ITaas", 3, 5, 368, 1278));
+        HypervisorClustersList.add(new HypervisorCluster("ITaas Workload", 2, 15, 1160, 12284));
+        HypervisorClustersList.add(new HypervisorCluster("Edge", 0, 10, 757, 6653));
+        HypervisorClustersList.add(new HypervisorCluster("Test Hypervisor-Cluster", 0, 10, 757, 6653));
 
     }
 

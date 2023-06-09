@@ -26,6 +26,8 @@ public class GeneralController {
         this.neo4jTemplate = neo4jTemplate;
     }
 
+// ############################## Relationships Update ########################################################
+
     // http://localhost:8089/ooredoo/General/createRelationshipHypervisor-SingleVM
     @PostMapping("/createRelationshipHypervisor-SingleVM")
     public void createRelationshipBetweenHypervisorAndVM(@RequestBody Map<String, String> request) {
@@ -70,12 +72,38 @@ public class GeneralController {
         return ResponseEntity.ok("Hypervisor VM List updated successfully");
     }
 
-    // http://localhost:8089/ooredoo/General/update-vm-database
-    @PostMapping("/update-vm-database")
-    public ResponseEntity<String> updateVMDatabase() {
-        GeneralService.addVMToList();
-        GeneralService.updateVMDatabase(GeneralService.VMsList);
-        return ResponseEntity.ok("VM Database updated successfully");
+// ############################## Components Update ########################################################
+
+    // http://localhost:8089/ooredoo/General/update-Datacenter-database
+    @PostMapping("/update-Datacenter-database")
+    public ResponseEntity<String> updateDatacenterDatabase() {
+        GeneralService.addDatacenterToList();
+        GeneralService.updateDatacenterDatabase(GeneralService.DatacentersList);
+        return ResponseEntity.ok("Datastore Database updated successfully");
+    }
+
+    // http://localhost:8089/ooredoo/General/update-DatastoreCluster-database
+    @PostMapping("/update-DatastoreCluster-database")
+    public ResponseEntity<String> updateDatastoreClusterDatabase() {
+        GeneralService.addDatastoreClusterToList();
+        GeneralService.updateDatastoreClusterDatabase(GeneralService.DatastoreClustersList);
+        return ResponseEntity.ok("Datastore Database updated successfully");
+    }
+
+    // http://localhost:8089/ooredoo/General/update-Datastore-database
+    @PostMapping("/update-Datastore-database")
+    public ResponseEntity<String> updateDatastoreDatabase() {
+        GeneralService.addDatastoreToList();
+        GeneralService.updateDatastoreDatabase(GeneralService.DatastoresList);
+        return ResponseEntity.ok("Datastore Database updated successfully");
+    }
+
+    // http://localhost:8089/ooredoo/General/update-HypervisorCluster-database
+    @PostMapping("/update-HypervisorCluster-database")
+    public ResponseEntity<String> updateHypervisorClusterDatabase() {
+        GeneralService.addHypervisorClusterToList();
+        GeneralService.updateHypervisorClusterDatabase(GeneralService.HypervisorClustersList);
+        return ResponseEntity.ok("Datastore Database updated successfully");
     }
 
     // http://localhost:8089/ooredoo/General/update-Hypervisor-database
@@ -86,12 +114,14 @@ public class GeneralController {
         return ResponseEntity.ok("Hypervisor Database updated successfully");
     }
 
-    // http://localhost:8089/ooredoo/General/update-Datastore-database
-    @PostMapping("/update-Datastore-database")
-    public ResponseEntity<String> updateDatastoreDatabase() {
-        GeneralService.addDatastoreToList();
-        GeneralService.updateDatastoreDatabase(GeneralService.DatastoresList);
-        return ResponseEntity.ok("Datastore Database updated successfully");
+    // http://localhost:8089/ooredoo/General/update-vm-database
+    @PostMapping("/update-vm-database")
+    public ResponseEntity<String> updateVMDatabase() {
+        GeneralService.addVMToList();
+        GeneralService.updateVMDatabase(GeneralService.VMsList);
+        return ResponseEntity.ok("VM Database updated successfully");
     }
+
+
 
 }
