@@ -79,7 +79,7 @@ public class GeneralController {
     public ResponseEntity<String> updateDatacenterDatabase() {
         GeneralService.addDatacenterToList();
         GeneralService.updateDatacenterDatabase(GeneralService.DatacentersList);
-        return ResponseEntity.ok("Datastore Database updated successfully");
+        return ResponseEntity.ok("Datacenter Database updated successfully");
     }
 
     // http://localhost:8089/ooredoo/General/update-DatastoreCluster-database
@@ -87,7 +87,7 @@ public class GeneralController {
     public ResponseEntity<String> updateDatastoreClusterDatabase() {
         GeneralService.addDatastoreClusterToList();
         GeneralService.updateDatastoreClusterDatabase(GeneralService.DatastoreClustersList);
-        return ResponseEntity.ok("Datastore Database updated successfully");
+        return ResponseEntity.ok("Datastore Cluster Database updated successfully");
     }
 
     // http://localhost:8089/ooredoo/General/update-Datastore-database
@@ -103,7 +103,7 @@ public class GeneralController {
     public ResponseEntity<String> updateHypervisorClusterDatabase() {
         GeneralService.addHypervisorClusterToList();
         GeneralService.updateHypervisorClusterDatabase(GeneralService.HypervisorClustersList);
-        return ResponseEntity.ok("Datastore Database updated successfully");
+        return ResponseEntity.ok("Hypervisor Cluster Database updated successfully");
     }
 
     // http://localhost:8089/ooredoo/General/update-Hypervisor-database
