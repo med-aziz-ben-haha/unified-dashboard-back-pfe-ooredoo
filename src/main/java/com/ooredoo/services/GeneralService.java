@@ -54,8 +54,8 @@ public class GeneralService {
 
     public Map<String, Object> DatacenterDatastoreClusterList = new HashMap<>();
     public void linkDatacenterDatastoreClusters(){
-        DatacenterDatastoreClusterList.put("Datacenter", "DatacenterTest1");
-        DatacenterDatastoreClusterList.put("DatastoreClusters", Arrays.asList("TestDatastoreCluster1", "TestDatastoreCluster"));
+        DatacenterDatastoreClusterList.put("Datacenter", "Test Datacenter");
+        DatacenterDatastoreClusterList.put("DatastoreClusters", Arrays.asList("Test DatastoreCluster 1", "Test DatastoreCluster"));
     }
     public void updateRelationshipBetweenOneDatacenterAndDatastoreClusters(Map<String, Object> DatacenterDatastoreClusterList) {
         String DatacenterName = (String) DatacenterDatastoreClusterList.get("Datacenter");
@@ -292,7 +292,7 @@ public class GeneralService {
         DatastoreClustersList.add(new DatastoreCluster("CHA-UNIFY_NFV_WLD_DSC", 2227.0, 8191.5));
         DatastoreClustersList.add(new DatastoreCluster("MGH-UNIFY_ITAAS_U550F_LOCAL", 7262.44, 8191.5));
         DatastoreClustersList.add(new DatastoreCluster("Test DatastoreCluster", 7262.44, 8191.5));
-
+        DatastoreClustersList.add(new DatastoreCluster("Test DatastoreCluster 1", 7262.44, 8191.5));
     }
 
     //-------------------- Update Datastore database ------------------
