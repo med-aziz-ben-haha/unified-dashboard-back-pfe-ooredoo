@@ -71,6 +71,35 @@ public class GeneralService {
 
     }
 
+
+    //-------------------- Update Datacenter Datastore  relationship database ------------------
+    public Relationship createRelationshipBetweenDatacenterAndDatastore(String DatacenterName, String DatastoreName) {
+        return DatacenterRepository.createRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+    }
+    public void deleteRelationshipBetweenDatacenterAndDatastore(String DatacenterName, String DatastoreName) {
+        DatacenterRepository.deleteRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+    }
+
+    public Map<String, Object> DatacenterDatastoreList = new HashMap<>();
+    public void linkDatacenterDatastores(){
+        DatacenterDatastoreList.put("Datacenter", "DatacenterTest1");
+        DatacenterDatastoreList.put("Datastores", Arrays.asList("TestDatastore1", "TestDatastore"));
+    }
+    public void updateRelationshipBetweenOneDatacenterAndDatastores(Map<String, Object> DatacenterDatastoreList) {
+        String DatacenterName = (String) DatacenterDatastoreList.get("Datacenter");
+        List<String> DatastoreList = (List<String>) DatacenterDatastoreList.get("Datastores");
+
+        List<Datastore> currentDatastores = DatastoreService.getDatastoresByDatacenterName(DatacenterName);// Get the current Datastores associated with the Datacenter
+
+        for (String DatastoreName : DatastoreList) // Create relationships for new Datastores
+            if (!currentDatastores.stream().anyMatch(Datastore -> Datastore.getName().equals(DatastoreName))) createRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+
+        for (Datastore Datastore : currentDatastores) // Delete relationships for Datastores not in the list
+            if (!DatastoreList.contains(Datastore.getName())) deleteRelationshipBetweenDatacenterAndDatastore(DatacenterName, Datastore.getName());
+
+    }
+
+
     //-------------------- Update DatastoreCluster Datastore  relationship database ------------------
     public Relationship createRelationshipBetweenDatastoreClusterAndDatastore(String DatastoreClusterName, String DatastoreName) {
         return DatastoreClusterRepository.createRelationshipBetweenDatastoreClusterAndDatastore(DatastoreClusterName, DatastoreName);

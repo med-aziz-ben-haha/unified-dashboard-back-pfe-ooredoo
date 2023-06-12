@@ -35,6 +35,14 @@ public interface DatacenterRepository extends Neo4jRepository<Datacenter, Long> 
     @Query("MATCH (Datacenter:Datacenter {name: $DatacenterName})-[r:contains]->(DatastoreCluster:DatastoreCluster {name: $DatastoreClusterName}) DELETE r")
     void deleteRelationshipBetweenDatacenterAndDatastoreCluster(@Param("DatacenterName") String DatacenterName, @Param("DatastoreClusterName") String DatastoreClusterName);
 
+    //create Datacenter Datastore relationship
+    @Query("MATCH (Datacenter:Datacenter {name: $DatacenterName}), (Datastore:Datastore {name: $DatastoreName}) CREATE (Datacenter)-[r:contains]->(Datastore)")
+    Relationship createRelationshipBetweenDatacenterAndDatastore(String DatacenterName, String DatastoreName);
+    //delete Datacenter Datastore relationship
+    @Query("MATCH (Datacenter:Datacenter {name: $DatacenterName})-[r:contains]->(Datastore:Datastore {name: $DatastoreName}) DELETE r")
+    void deleteRelationshipBetweenDatacenterAndDatastore(@Param("DatacenterName") String DatacenterName, @Param("DatastoreName") String DatastoreName);
+
+
     //create Datacenter HypervisorCluster relationship
     @Query("MATCH (Datacenter:Datacenter {name: $DatacenterName}), (HypervisorCluster:HypervisorCluster {name: $HypervisorClusterName}) CREATE (Datacenter)-[r:contains]->(HypervisorCluster)")
     Relationship createRelationshipBetweenDatacenterAndHypervisorCluster(String DatacenterName, String HypervisorClusterName);

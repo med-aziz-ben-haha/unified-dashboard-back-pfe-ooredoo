@@ -73,6 +73,53 @@ public class GeneralController {
     }
 
 
+    //--------------------------------- Datacenter Datastore --------------------------------------
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatacenter-SingleDatastore
+    @PostMapping("/createRelationshipDatacenter-SingleDatastore")
+    public void createRelationshipBetweenDatacenterAndDatastore(@RequestBody Map<String, String> request) {
+        String DatacenterName = request.get("Datacenter");
+        String DatastoreName = request.get("Datastore");
+        GeneralService.createRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatacenter-SingleDatastore
+    @DeleteMapping("/deleteRelationshipDatacenter-SingleDatastore")
+    public void deleteRelationshipBetweenDatacenterAndDatastore(@RequestBody Map<String, String> request) {
+        String DatacenterName = request.get("Datacenter");
+        String DatastoreName = request.get("Datastore");
+        GeneralService.deleteRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+    }
+
+    // http://localhost:8089/ooredoo/General/createRelationshipDatacenter-MultipleDatastores
+    @PostMapping("/createRelationshipDatacenter-MultipleDatastores")
+    public void createRelationshipBetweenDatacenterAndDatastores(@RequestBody Map<String, Object> request) {
+        String DatacenterName = (String) request.get("Datacenter");
+        List<String> DatastoreNames = (List<String>) request.get("Datastores");
+        for (String DatastoreName : DatastoreNames) {
+            GeneralService.createRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/deleteRelationshipDatacenter-MultipleDatastores
+    @DeleteMapping("/deleteRelationshipDatacenter-MultipleDatastores")
+    public void deleteRelationshipBetweenDatacenterAndDatastores(@RequestBody Map<String, Object> request) {
+        String DatacenterName = (String) request.get("Datacenter");
+        List<String> DatastoreNames = (List<String>) request.get("Datastores");
+        for (String DatastoreName : DatastoreNames) {
+            GeneralService.deleteRelationshipBetweenDatacenterAndDatastore(DatacenterName, DatastoreName);
+        }
+    }
+
+    // http://localhost:8089/ooredoo/General/update-Datacenter-DatastoreList
+    @PostMapping("/update-Datacenter-DatastoreList")
+    public ResponseEntity<String> updateOneDatacenterDatastoreList() {
+        GeneralService.linkDatacenterDatastores();
+        GeneralService.updateRelationshipBetweenOneDatacenterAndDatastores(GeneralService.DatacenterDatastoreList);
+        return ResponseEntity.ok("Datacenter Datastore List updated successfully");
+    }
+
+
     //--------------------------------- DatastoreCluster Datastore --------------------------------------
 
     // http://localhost:8089/ooredoo/General/createRelationshipDatastoreCluster-SingleDatastore
