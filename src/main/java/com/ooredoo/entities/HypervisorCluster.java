@@ -51,6 +51,9 @@ public class HypervisorCluster {
     //Constructor
     public HypervisorCluster() {    }
 
+    //constructor : name
+    public HypervisorCluster(String name) { this.name = name; }
+
     // parameterized constructor
     public HypervisorCluster(String name, int esxsInHighMemoryUsage, int numberOfESX, int totalCPU, long totalMemory) {
         this.name = name;

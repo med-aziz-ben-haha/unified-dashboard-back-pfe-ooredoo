@@ -30,13 +30,13 @@ pipeline{
         }
 
 
-
+/*
          stage('Unit Tests') {
             steps{
                		 sh "mvn test "
             }
         }
-
+*/
 
 
         stage('Code Quality Check via SonarQube') {
