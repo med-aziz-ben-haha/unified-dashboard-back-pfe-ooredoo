@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -20,13 +21,10 @@ public class DatastoreCluster {
     private double totalCapacity;
 
     @Relationship(type = "contains", direction = Relationship.OUTGOING)
-    private List<Datastore> Datastores;
+    private List<Datastore> Datastores= new ArrayList<>();
 
 
     //Getters and setters
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
-
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
 

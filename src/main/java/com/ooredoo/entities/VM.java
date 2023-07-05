@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -32,7 +33,7 @@ public class VM {
     private int vCPUs;
 
     @Relationship(type = "Associated", direction = Relationship.INCOMING)
-    private List<Datastore> Datastores;
+    private List<Datastore> Datastores= new ArrayList<>();
 
     //Getters and Setters
     public double getCPU_Usage() {return CPU_Usage;}
@@ -117,8 +118,5 @@ public class VM {
         this.vCPUs = vCPUs;
         Datastores = datastores;
     }
-
-
-
 
 }

@@ -7,6 +7,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -28,12 +29,10 @@ public class Hypervisor {
     private String Version;
 
     @Relationship(type = "run", direction = Relationship.OUTGOING)
-    private List<VM> VMS;
+    private List<VM> VMS= new ArrayList<>();
 
 
     //Getters and stters
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
